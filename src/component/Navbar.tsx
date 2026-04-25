@@ -4,11 +4,9 @@ import ShinyText from "@/components/ShinyText";
 import Link from "next/link";
 import  { RainbowButton } from "@/components/ui/rainbow-button"
 
-import React from "react";
-import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-  const router = useRouter()
+  
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-center z-50 p-4 ">
       <div className="w-full max-w-7xl h-18 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-between px-8">
@@ -37,7 +35,7 @@ const Navbar = () => {
               disabled={false}
             />
           </Link>
-          <Link href="/Jobs" className="hover:text-white transition">
+          <Link href="/jobs" className="hover:text-white transition">
             <ShinyText
               text="Jobs"
               speed={3}
@@ -81,11 +79,10 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex gap-4 items-center">
-          <button onClick={()=> router.push("/login")} className="text-gray-200 text-xl cursor-pointer font-semibold hover:text-white">
-            {" "}
+          <Link href="/login" className="hover:text-white transition">
             <ShinyText
               text="Login"
-              speed={2}
+              speed={3}
               delay={0}
               color="#b5b5b5"
               shineColor="#ffffff"
@@ -95,7 +92,7 @@ const Navbar = () => {
               pauseOnHover={false}
               disabled={false}
             />
-          </button>
+          </Link>
           <RainbowButton className="px-8 py-4 border border-white/10 rounded-xl  duration-300">
             <ShinyText
               text="Your Profile"

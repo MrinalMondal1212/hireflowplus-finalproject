@@ -3,11 +3,10 @@ import React from 'react';
 import { Mail, Lock, User, Building, ArrowRight } from 'lucide-react';
 import { RainbowButton } from '@/components/ui/rainbow-button';
 import ShinyText from '@/components/ShinyText';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const Register = () => {
-  const router = useRouter();
+  
 
   return (
     // Background using your oklch variable directly
@@ -107,7 +106,7 @@ const Register = () => {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <Link href="/login" className="bg-[#121212] cursor-pointer px-2 text-white/30">
-              Already have an account? <span className="text-[var(--primary)] ml-1">Login</span>
+              Already have an account? <span className="text-white ml-1">Login</span>
             </Link>
           </div>
         </div>
