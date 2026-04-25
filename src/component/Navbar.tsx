@@ -2,8 +2,10 @@
 import GradientText from "@/components/GradientText";
 import Link from "next/link";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter()
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-center z-50 p-4 pointer-events-none">
       <div className="w-full max-w-7xl h-18 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-between px-8 pointer-events-auto">
@@ -35,7 +37,7 @@ const Navbar = () => {
           <Link href="/login" className="hover:text-white text-gray/5 text-xl  transition">
             Login
           </Link>
-          <RainbowButton className="px-8 py-4 border border-white/10 rounded-xl duration-300">
+          <RainbowButton onClick={()=> router.push('/dashboard') } className="px-8 py-4 border border-white/10 rounded-xl duration-300">
             My Profile
           </RainbowButton>
         </div>
