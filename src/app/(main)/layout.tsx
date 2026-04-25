@@ -1,6 +1,5 @@
 import Navbar from "@/component/Navbar";
 import Footer from "@/component/Footer";
-import DarkVeil from "@/components/DarkVeil";
 
 export default function MainLayout({
   children,
@@ -8,26 +7,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen flex flex-col">
-      
-      {/* Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="w-full h-[800px] relative">
-          <DarkVeil
-            hueShift={0}
-            noiseIntensity={0}
-            scanlineIntensity={0}
-            speed={0.5}
-            scanlineFrequency={0}
-            warpAmount={0}
-          />
-        </div>
-      </div>
-
+    <div className="relative min-h-screen flex flex-col bg-slate-950">
       <Navbar />
-
-      <main className="flex-1 pt-24">{children}</main>
-
+      <main className="flex-1">{children}</main> {/* Removed pt-24 since it's now in Home page */}
       <Footer />
     </div>
   );
