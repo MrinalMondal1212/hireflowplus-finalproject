@@ -27,7 +27,7 @@ const Navbar = () => {
           <Link href="/companies" className="hover:text-white transition">
             Companies
           </Link>
-          <Link href="/jobs" className="hover:text-white transition">
+          <Link href="/" className="hover:text-white transition">
             Salaries
           </Link>
         </div>
