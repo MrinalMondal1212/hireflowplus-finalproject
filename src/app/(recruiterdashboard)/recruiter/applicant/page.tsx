@@ -102,7 +102,8 @@ export default function ApplicantsList() {
                   <div className="flex gap-2">
                     <Link
                       href={`/recruiter/applicant/${app.id}`}
-                      className="p-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700"
+                      className="p-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200 inline-flex items-center justify-center"
+                      aria-label={`View applicant ${app.id} details`}
                     >
                       <Eye className="w-5 h-5" />
                     </Link>
