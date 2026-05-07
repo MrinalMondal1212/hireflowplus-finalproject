@@ -1,13 +1,28 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import ShinyText from "@/components/ShinyText";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getUserRole, loginUser } from "@/lib/auth";
 
 const Login = () => {
   const router = useRouter();
+  const [email, setEmail]= useState("")
+  const [password, setPassWord] = useState("")
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const handelLogin = async()=> {
+    setLoading(true)
+    const user = await loginUser(email, password);
+    if(!user)return;
+    const role = await getUserRole(user.id)
+    if(role == "user") router.push("/")
+    if(role == "recruiter") router.push("/recruiter")
+    if(role == "admin") router.push("/admindashboard")
+      setLoading(false)
+  }
 
   return (
     <div className="min-h-screen bg-[oklch(0.12_0.01_250)] flex items-center justify-center px-4 font-sans">
@@ -39,6 +54,7 @@ const Login = () => {
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="email"
+                onChange={(e)=> setEmail(e.target.value)}
                 placeholder="name@company.com"
                 className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/10 rounded-md text-white outline-none focus:ring-1 focus:ring-primary"
               />
@@ -52,6 +68,7 @@ const Login = () => {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="password"
+                onChange={(e)=> setPassWord(e.target.value)}
                 placeholder="••••••••"
                 className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/10 rounded-md text-white outline-none focus:ring-1 focus:ring-primary"
               />
@@ -59,9 +76,9 @@ const Login = () => {
           </div>
 
           {/* Button */}
-          <RainbowButton className="w-full py-3 flex items-center justify-center gap-2">
+          <RainbowButton onClick={handelLogin} disabled={loading} type="button" className="w-full py-3 flex items-center justify-center gap-2">
             <ShinyText
-              text="Continue"
+              text={loading ? "Logging in...":"Continue "} 
               color="#ffffff"
               shineColor="var(--primary)"
               className="font-bold text-sm"

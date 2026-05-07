@@ -1,62 +1,162 @@
-import React from 'react';
-import { Briefcase, ChevronRight, CheckCircle2, Clock, XCircle } from 'lucide-react';
+"use client";
+
+import {
+  Briefcase,
+  ChevronRight,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Calendar,
+  Star,
+  Video,
+} from "lucide-react";
+
+import { useApplications } from "@/hooks/useApplications";
 
 export default function ApplicationsPage() {
-  const applications = [
-    { company: "Google", role: "Software Engineer", status: "In Review", date: "Applied 3 days ago" },
-    { company: "Meta", role: "Frontend Dev", status: "Interviewing", date: "Applied 1 week ago" },
-    { company: "Vercel", role: "UI Engineer", status: "Rejected", date: "Applied 2 weeks ago" }
-  ];
+  const { data: applications = [], isLoading } = useApplications();
 
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case "Interviewing": return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
-      case "Rejected": return "text-rose-400 bg-rose-400/10 border-rose-400/20";
-      default: return "text-indigo-400 bg-indigo-400/10 border-indigo-400/20";
-    }
-  };
+  if (isLoading) {
+    return <div className="p-10 text-white">Loading applications...</div>;
+  }
+  console.log(applications)
+
+const getStatusUI = (status: string) => {
+  switch (status) {
+    case "shortlisted":
+      return {
+        icon: CheckCircle2,
+        className:
+          "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+      };
+
+    case "rejected":
+      return {
+        icon: XCircle,
+        className:
+          "bg-rose-500/10 text-rose-400 border-rose-500/30",
+      };
+
+    default:
+      return {
+        icon: Clock,
+        className:
+          "bg-amber-500/10 text-amber-400 border-amber-500/30",
+      };
+  }
+};
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Applications History</h1>
-      
-      <div className="bg-slate-900/50 border border-white/10 rounded-3xl overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-white/5 border-b border-white/10">
-            <tr>
-              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Company & Role</th>
-              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Date Applied</th>
-              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Status</th>
-              <th className="px-6 py-4 text-sm font-semibold text-slate-400"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {applications.map((app, i) => (
-              <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                <td className="px-6 py-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-600/10 rounded-lg">
-                      <Briefcase className="w-5 h-5 text-indigo-400" />
-                    </div>
-                    <div>
-                      <div className="font-bold">{app.company}</div>
-                      <div className="text-sm text-slate-500">{app.role}</div>
-                    </div>
+      <div>
+        <h1 className="text-3xl font-bold text-white">Applications History</h1>
+
+        <p className="text-slate-400 mt-2">
+          Track your job applications and recruiter updates.
+        </p>
+      </div>
+
+      <div className="space-y-5">
+        {applications?.map((app: any) => {
+          const statusUI = getStatusUI(app.status);
+          const StatusIcon = statusUI.icon;
+
+          return (
+            <div
+              key={app.id}
+              className="bg-slate-900/40 border border-white/10 rounded-3xl p-6 hover:border-indigo-500/20 transition-all"
+            >
+              {/* Top Section */}
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                {/* Left */}
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-indigo-500/10 rounded-2xl">
+                    <Briefcase className="w-6 h-6 text-indigo-400" />
                   </div>
-                </td>
-                <td className="px-6 py-6 text-slate-400 text-sm">{app.date}</td>
-                <td className="px-6 py-6">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusStyle(app.status)}`}>
-                    {app.status}
+
+                  <div>
+                    <h2 className="text-xl font-bold text-white">
+                      {app.jobs?.title}
+                    </h2>
+
+                    <p className="text-slate-400 mt-1">{app.jobs?.company}</p>
+
+                    <p className="text-sm text-slate-500 mt-1">
+                      Applied on {new Date(app.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div
+                  className={`
+    inline-flex items-center gap-2 
+    px-4 py-2 rounded-full border 
+    text-sm font-semibold capitalize
+    ${statusUI.className}
+  `}
+                >
+                  <StatusIcon className="w-4 h-4" />
+
+                  <span>
+                    {app.status === "rejected"
+                      ? "Application Rejected"
+                      : app.status === "shortlisted"
+                        ? "Shortlisted"
+                        : "Pending Review"}
                   </span>
-                </td>
-                <td className="px-6 py-6 text-right text-slate-500">
-                  <ChevronRight className="w-5 h-5 inline" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+              </div>
+
+              {/* Recruiter Notes */}
+              {app.recruiter_note && (
+                <div className="mt-6 bg-white/5 border border-white/5 rounded-2xl p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">
+                    Recruiter Feedback
+                  </p>
+
+                  <p className="text-slate-300">{app.recruiter_note}</p>
+
+                  {app.recruiter_rating && (
+                    <div className="flex items-center gap-2 mt-4">
+                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+
+                      <span className="text-yellow-400 font-semibold">
+                        {app.recruiter_rating}/5
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Interview Section */}
+              {app.interview_date && (
+                <div className="mt-6 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-5">
+                  <div className="flex items-center gap-2 text-indigo-300 font-semibold">
+                    <Calendar className="w-5 h-5" />
+                    Interview Scheduled
+                  </div>
+
+                  <p className="text-slate-300 mt-2">
+                    {new Date(app.interview_date).toLocaleString()}
+                  </p>
+
+                  {app.meeting_link && (
+                    <a
+                      href={app.meeting_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-all"
+                    >
+                      <Video className="w-4 h-4" />
+                      Join Meeting
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

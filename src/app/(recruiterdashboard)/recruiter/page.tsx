@@ -1,9 +1,13 @@
 // app/recruiter/page.tsx
+"use client"
 import React from 'react';
 import Link from 'next/link';
 import { Briefcase, Users, CalendarCheck, Eye, TrendingUp, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { useRecruiterJobs } from '@/hooks/useRecruiterJobs';
 
 export default function RecruiterDashboard() {
+
+  const {data : jobs = [],isLoading} = useRecruiterJobs()
   // Mock data - this will come from Supabase
   const stats = [
     { label: "Active Jobs", value: "8", icon: Briefcase, color: "from-indigo-600", change: "+2" },
@@ -12,12 +16,7 @@ export default function RecruiterDashboard() {
     { label: "Hiring Rate", value: "18%", icon: TrendingUp, color: "from-cyan-600", change: "+3%" }
   ];
 
-  const activeJobs = [
-    { id: 1, title: "Senior Frontend Developer", applicants: 34, status: "Active", postedDate: "2024-01-15" },
-    { id: 2, title: "Backend Engineer (Node.js)", applicants: 28, status: "Active", postedDate: "2024-01-18" },
-    { id: 3, title: "UI/UX Designer", applicants: 19, status: "Draft", postedDate: "2024-01-20" },
-    { id: 4, title: "DevOps Engineer", applicants: 12, status: "Active", postedDate: "2024-01-22" },
-  ];
+  const activeJobs = jobs;
 
   const pipelineStages = [
     { name: "Applied", count: 87, color: "bg-blue-500", percentage: 59 },
@@ -39,7 +38,7 @@ export default function RecruiterDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
           <div key={stat.label} className="relative group">
-            <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} to-transparent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500`}></div>
+            <div className={`absolute -inset-0.5 bg-linear-to-r ${stat.color} to-transparent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500`}></div>
             <div className="relative p-6 bg-slate-900/50 border border-white/10 rounded-2xl">
               <div className="flex items-center justify-between">
                 <stat.icon className="w-8 h-8 text-indigo-400" />

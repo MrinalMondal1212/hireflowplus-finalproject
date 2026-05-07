@@ -4,30 +4,27 @@ import FinalCTA from "@/component/FinalCTA";
 import JobHubs from "@/component/JobHubs";
 import RecruiterSection from "@/component/RecruiterSection";
 import StatsSection from "@/component/StatsSection";
-import TechLogos from "@/component/TechLogos";
 import TrustSection from "@/component/TrustSection";
 import { AuroraText } from "@/components/ui/aurora-text";
 import { Search, MapPin } from "lucide-react";
-import DarkVeil from "@/components/DarkVeil";
+
+import Aurora from "@/components/Aurora";
 
 export default function Home() {
   return (
     <div className="relative w-full flex flex-col items-center justify-center overflow-hidden pb-0 bg-black">
-      
-      {/* Hero Section with DarkVeil - only affects this section */}
-      <div className="relative w-full">
-        {/* DarkVeil background layer - positioned relative to hero section */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <DarkVeil
-            hueShift={0}
-            noiseIntensity={0}
-            scanlineIntensity={0}
-            speed={0.5}
-            scanlineFrequency={0}
-            warpAmount={0}
+      {/* Hero Section */}
+      <div className="relative w-full min-h-screen">
+        {/* Aurora background - only in top half of hero */}
+        <div className="absolute top-0 left-0 right-0 h-1/2 z-0 pointer-events-none overflow-hidden">
+          <Aurora
+            colorStops={["#7cff67", "#B497CF", "#5227FF"]}
+            blend={0.5}
+            amplitude={1.0}
+            speed={1}
           />
-          {/* Gradient overlay to soften transition */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/20 to-black" />
+          {/* Gradient overlay to fade out at the bottom */}
+          <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black" />
         </div>
 
         {/* Hero Content */}
@@ -40,15 +37,15 @@ export default function Home() {
                 <AuroraText>high-growth teams.</AuroraText>
               </h1>
               <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl">
-                HireFlow+ uses proprietary neural matching to connect elite talent
-                with the world's most innovative companies. No more scrolling, just
-                matching.
+                HireFlow+ uses proprietary neural matching to connect elite
+                talent with the world's most innovative companies. No more
+                scrolling, just matching.
               </p>
             </div>
 
             {/* Search Bar Container */}
             <div className="relative group max-w-4xl">
-              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+              <div className="absolute -inset-1 bg-linear-0-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
               <div className="relative flex flex-col md:flex-row items-center bg-slate-950/60 backdrop-blur-xl border border-white/10 p-2 rounded-2xl shadow-2xl">
                 <div className="flex items-center flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-white/10 py-3 md:py-0">
                   <Search className="w-5 h-5 text-slate-500 mr-3" />
@@ -75,15 +72,14 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Other Sections (no DarkVeil here) */}
+      {/* Other Sections */}
       <div className="w-full flex flex-col items-center bg-black relative z-10">
-        <TechLogos/>
         <JobHubs />
         <FeaturedJobs />
-        <RecruiterSection/>
-        <StatsSection/>
-        <TrustSection/>
-        <FinalCTA/>
+        <RecruiterSection />
+        <StatsSection />
+        <TrustSection />
+        <FinalCTA />
       </div>
     </div>
   );

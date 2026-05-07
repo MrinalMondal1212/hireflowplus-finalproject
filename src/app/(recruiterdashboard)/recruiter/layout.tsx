@@ -20,7 +20,7 @@ export default function RecuriterDashboardLayout({
       {/* Sidebar - Fixed to the left */}
       <aside className="w-72 border-r border-white/10 bg-slate-950/50 backdrop-blur-xl flex flex-col fixed h-full z-20">
         <div className="p-8">
-          <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold bg-linear-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
             HireFlow+
           </h2>
           <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest">Recruiter Portal</p>
