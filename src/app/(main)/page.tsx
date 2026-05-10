@@ -9,8 +9,23 @@ import { AuroraText } from "@/components/ui/aurora-text";
 import { Search, MapPin } from "lucide-react";
 
 import Aurora from "@/components/Aurora";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
+
+  const [search, setSearch] = useState("");
+  const [location, setLocation] = useState("");
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+
+    if (search) params.set("search", search);
+    if (location) params.set("location", location);
+
+    router.push(`/jobs?${params.toString()}`);
+  };
   return (
     <div className="relative w-full flex flex-col items-center justify-center overflow-hidden pb-0 bg-black">
       {/* Hero Section */}
@@ -33,8 +48,8 @@ export default function Home() {
             {/* Headline Section */}
             <div className="mb-12">
               <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-tight tracking-tight text-white">
-                The modern <br /> recruitment platform for{" "}
-                <AuroraText>high-growth teams.</AuroraText>
+                The modern <br /> recruitment & Hiring platform{" "}
+                <AuroraText>for high-growth teams.</AuroraText>
               </h1>
               <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl">
                 HireFlow+ uses proprietary neural matching to connect elite
@@ -52,6 +67,8 @@ export default function Home() {
                   <input
                     type="text"
                     placeholder="Job title or keywords"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="bg-transparent w-full outline-none text-white placeholder:text-slate-500 text-lg"
                   />
                 </div>
@@ -60,10 +77,15 @@ export default function Home() {
                   <input
                     type="text"
                     placeholder="Location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                     className="bg-transparent w-full outline-none text-white placeholder:text-slate-500 text-lg"
                   />
                 </div>
-                <button className="w-full md:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all active:scale-95 shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+                <button
+                  onClick={handleSearch}
+                  className="w-full md:w-auto px-8 py-4 cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all active:scale-95 shadow-[0_0_20px_rgba(79,70,229,0.4)]"
+                >
                   Search Jobs
                 </button>
               </div>

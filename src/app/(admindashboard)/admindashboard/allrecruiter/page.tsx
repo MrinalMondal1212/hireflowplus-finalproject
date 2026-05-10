@@ -1,62 +1,53 @@
 // app/admindashboard/allrecruiter/page.tsx
 "use client";
-import React, { useState } from 'react';
-import { Search, MoreVertical, Shield, Ban, CheckCircle, Mail, Building, Calendar } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Search,
+  MoreVertical,
+  Shield,
+  Ban,
+  CheckCircle,
+  Mail,
+  Building,
+  Calendar,
+} from "lucide-react";
+import { useAllRecruiters } from "@/hooks/useAllRecruiters";
+import { useToggleRecruiterStatus } from "@/hooks/useToggleRecruiterStatus";
 
 export default function AllRecruiters() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const { data: recruiters = [], isLoading } = useAllRecruiters();
 
-  // Mock recruiter data
-  const recruiters = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@techcorp.com",
-      company: "Tech Corp",
-      totalJobs: 45,
-      totalHires: 12,
-      status: "active",
-      joinedDate: "2023-06-15",
-      verified: true
-    },
-    {
-      id: 2,
-      name: "Mike Chen",
-      email: "mike.chen@innovate.io",
-      company: "Innovate Inc",
-      totalJobs: 38,
-      totalHires: 9,
-      status: "active",
-      joinedDate: "2023-08-20",
-      verified: true
-    },
-    {
-      id: 3,
-      name: "Emma Wilson",
-      email: "emma@futuresystems.com",
-      company: "Future Systems",
-      totalJobs: 28,
-      totalHires: 5,
-      status: "suspended",
-      joinedDate: "2023-10-10",
-      verified: false
-    }
-  ];
+  const toggleRecruiter = useToggleRecruiterStatus();
 
-  const filteredRecruiters = recruiters.filter(recruiter => {
-    const matchesSearch = recruiter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          recruiter.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || recruiter.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+ 
+
+const filteredRecruiters = recruiters.filter((recruiter:any) => {
+  const matchesSearch =
+    (recruiter.full_name || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()) ||
+
+    (recruiter.email || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === "all" ||
+    recruiter.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-white">Recruiters Management</h1>
-        <p className="text-slate-400 mt-2">Manage and monitor all recruiter accounts</p>
+        <p className="text-slate-400 mt-2">
+          Manage and monitor all recruiter accounts
+        </p>
       </div>
 
       {/* Filters */}
@@ -87,24 +78,31 @@ export default function AllRecruiters() {
       {/* Recruiters Grid */}
       <div className="grid grid-cols-1 gap-4">
         {filteredRecruiters.map((recruiter) => (
-          <div key={recruiter.id} className="bg-slate-900/30 border border-white/10 rounded-2xl p-6 hover:border-indigo-500/50 transition-all">
+          <div
+            key={recruiter.id}
+            className="bg-slate-900/30 border border-white/10 rounded-2xl p-6 hover:border-indigo-500/50 transition-all"
+          >
             <div className="flex flex-wrap justify-between items-start gap-4">
               {/* Left Section */}
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-xl font-semibold text-white">{recruiter.name}</h3>
+                  <h3 className="text-xl font-semibold text-white">
+                    {recruiter.full_name || "Recruiter"}
+                  </h3>
                   {recruiter.verified && (
                     <CheckCircle className="w-5 h-5 text-emerald-400" />
                   )}
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    recruiter.status === 'active' 
-                      ? 'bg-emerald-400/10 text-emerald-400'
-                      : 'bg-red-400/10 text-red-400'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      recruiter.status === "active"
+                        ? "bg-emerald-400/10 text-emerald-400"
+                        : "bg-red-400/10 text-red-400"
+                    }`}
+                  >
                     {recruiter.status}
                   </span>
                 </div>
-                
+
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-slate-400">
                     <Mail className="w-4 h-4" />
@@ -112,28 +110,22 @@ export default function AllRecruiters() {
                   </div>
                   <div className="flex items-center gap-2 text-slate-400">
                     <Building className="w-4 h-4" />
-                    <span className="text-sm">{recruiter.company}</span>
+                    <span className="text-sm">{recruiter.company || "No Company Added"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-400">
                     <Calendar className="w-4 h-4" />
-                    <span className="text-sm">Joined: {recruiter.joinedDate}</span>
+                    <span className="text-sm">
+                     Joined: {new Date(recruiter.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{recruiter.totalJobs}</p>
-                    <p className="text-xs text-slate-400">Jobs Posted</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{recruiter.totalHires}</p>
-                    <p className="text-xs text-slate-400">Total Hires</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-emerald-400">
-                      {((recruiter.totalHires / recruiter.totalJobs) * 100).toFixed(0)}%
+                    <p className="text-2xl font-bold text-white">
+                      {recruiter.totalJobs}
                     </p>
-                    <p className="text-xs text-slate-400">Success Rate</p>
+                    <p className="text-xs text-slate-400">Jobs Posted</p>
                   </div>
                 </div>
               </div>
@@ -144,7 +136,7 @@ export default function AllRecruiters() {
                   <Shield className="w-4 h-4" />
                   Verify
                 </button>
-                {recruiter.status === 'active' ? (
+                {recruiter.status === "active" ? (
                   <button className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl transition-all">
                     <Ban className="w-4 h-4" />
                     Suspend

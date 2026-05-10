@@ -2,13 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button"; // Assuming Shadcn
-import { MapPin, Briefcase, Clock, ArrowUpRight, SquarePlus } from "lucide-react";
+import {
+  MapPin,
+  Briefcase,
+  Clock,
+  ArrowUpRight,
+  SquarePlus,
+} from "lucide-react";
 import Orb from "@/components/Orb"; // Your Orb component
 import GradientText from "@/components/GradientText";
 import { useJobs } from "@/hooks/useJobs";
 import Link from "next/link";
-
-
 
 const FeaturedJobs = () => {
   const router = useRouter();
@@ -19,7 +23,7 @@ const FeaturedJobs = () => {
 
   return (
     <section className="w-full py-20 bg-[oklch(0.12_0.01_250)] relative overflow-hidden">
-      <div  className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-5xl font-bold text-white tracking-tight">
@@ -56,7 +60,7 @@ const FeaturedJobs = () => {
 
           {/* Foreground 3x3 Grid Layer */}
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-            {jobs?.map((job:any) => (
+            {jobs?.map((job: any) => (
               <div
                 key={job.id}
                 className="group p-6 rounded-2xl bg-white/3 border border-white/10 backdrop-blur-md hover:bg-white/[0.07] hover:border-(--primary)/40 transition-all duration-500 cursor-pointer shadow-2xl"
@@ -82,8 +86,12 @@ const FeaturedJobs = () => {
                   <span className="flex items-center gap-1">
                     <Clock className="w-4 h-4" /> {job.job_type}
                   </span>
-                  <Link href={`/jobs/${job.id}`} className="flex  border-white/10 backdrop-blur-md  border p-2 rounded-2xl items-center gap-1">
-                    <SquarePlus className="w-4 h-4" /> Apply
+                  <Link
+                    href={`/jobs/${job.id}`}
+                    className="flex border border-white/10 backdrop-blur-md p-2 rounded-2xl items-center gap-1 hover:bg-white/10 transition"
+                  >
+                    <SquarePlus className="w-4 h-4" />
+                    Apply
                   </Link>
                 </div>
               </div>

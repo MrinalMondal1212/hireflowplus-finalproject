@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import {
@@ -18,6 +18,9 @@ import Link from "next/link";
 import { useApplyJob } from "@/hooks/useApplyJobs";
 import { useProfile } from "@/hooks/userProfile";
 import { useCheckApplied } from "@/hooks/useCheckApplied";
+import { toast } from "sonner";
+import { useSaveJob } from "@/hooks/useSaveJob";
+import { useSavedJobsStore } from "@/store/useSavedJobsStore";
 
 // Helper for company logo fallback
 function getInitials(name: string = "") {
@@ -30,6 +33,8 @@ function getInitials(name: string = "") {
 export default function JobDetailsPage() {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
+  const { mutate: saveJob } = useSaveJob();
 
   const {
     data: job,
@@ -49,10 +54,19 @@ export default function JobDetailsPage() {
   });
   const { data: profile } = useProfile(); // ✅ rename properly
   const { mutate: applyJob, isPending } = useApplyJob();
-  const { data: appliedData, isLoading : boolean} = useCheckApplied(job?.id);
+  const { data: appliedData, isLoading: boolean } = useCheckApplied(job?.id);
+  const savedJobs = useSavedJobsStore((s: any) => s.savedJobs);
+
+  const isSaved = savedJobs.includes(job?.id);
 
   const handleApply = () => {
-    if (!profile?.resume_url) {
+    if (!profile) {
+      toast.error("Please login first to apply");
+      router.push("/login");
+      return;
+    }
+
+    if (!profile.resume_url) {
       alert("Upload resume first");
       return;
     }
@@ -109,15 +123,6 @@ export default function JobDetailsPage() {
             </div>
             <span className="text-sm font-medium">Back to search</span>
           </Link>
-
-          <div className="flex gap-3">
-            <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-              <Share2 className="w-4 h-4" />
-            </button>
-            <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-              <Bookmark className="w-4 h-4" />
-            </button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -215,31 +220,73 @@ export default function JobDetailsPage() {
                 <h3 className="text-xl font-bold text-white mb-2 relative z-10">
                   Ready to apply?
                 </h3>
+
                 <p className="text-indigo-100 text-sm mb-8 relative z-10 opacity-90 leading-relaxed">
                   Join {job.company_name} and take the next step in your
                   professional journey.
                 </p>
 
+                {/* APPLY BUTTON */}
                 <button
                   onClick={handleApply}
                   disabled={isPending || appliedData}
-                  className={`w-full bg-white cursor-pointer text-indigo-600 py-4 rounded-2xl font-bold text-lg hover:bg-slate-100 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2 relative z-10
-                ${
-                  appliedData
-                    ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-indigo-500"
-                }`}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all shadow-xl flex items-center justify-center gap-2 relative z-10
+          
+          ${
+            appliedData
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-white text-indigo-600 hover:bg-slate-100 active:scale-95"
+          }
+        `}
                 >
                   {appliedData
                     ? "Already Applied"
                     : isPending
                       ? "Applying..."
                       : "Apply Now"}
+
                   <ExternalLink className="w-5 h-5" />
                 </button>
 
+                {/* SAVE BUTTON */}
+                <button
+                  onClick={() => {
+                    saveJob(job.id, {
+                      onSuccess: () => {
+                        toast.success("Job saved successfully");
+                      },
+
+                      onError: (err: any) => {
+                        if (err.message === "LOGIN_REQUIRED") {
+                          toast.error("Please login first");
+                          router.push("/login");
+                          return;
+                        }
+
+                        toast.error(err.message);
+                      },
+                    });
+                  }}
+                  className={`mt-4 w-full py-4 rounded-2xl border font-semibold transition-all duration-300 flex items-center justify-center gap-2
+
+          ${
+            isSaved
+              ? "bg-white text-black border-white"
+              : "bg-white/10 text-white border-white/20 hover:bg-white/20"
+          }
+        `}
+                >
+                  <Bookmark
+                    className={`w-5 h-5 ${isSaved ? "fill-current" : ""}`}
+                  />
+
+                  {isSaved ? "Saved Job" : "Save Job"}
+                </button>
+
+                {/* VERIFIED */}
                 <div className="mt-6 flex items-center justify-center gap-2 text-indigo-200 text-xs font-medium relative z-10">
-                  <ShieldCheck className="w-4 h-4" /> Verified Recruiter
+                  <ShieldCheck className="w-4 h-4" />
+                  Verified Recruiter
                 </div>
               </div>
             </div>

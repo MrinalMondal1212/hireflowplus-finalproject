@@ -1,89 +1,68 @@
-// app/admindashboard/alluser/page.tsx
 "use client";
-import React, { useState } from 'react';
-import { Search, Ban, CheckCircle, Mail, Phone, MapPin, Briefcase, Clock } from 'lucide-react';
+
+import React, { useState } from "react";
+
+import {
+  Search,
+  Ban,
+  CheckCircle,
+  Mail,
+  Phone,
+  MapPin,
+  Briefcase,
+  Clock,
+} from "lucide-react";
+
+import { useToggleUserStatus } from "@/hooks/useToggelUserStatus";
+import { useAllUser } from "@/hooks/useAllUsers";
 
 export default function AllUsers() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [userTypeFilter, setUserTypeFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock user data
-  const users = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@email.com",
-      phone: "+1 234 567 8900",
-      location: "San Francisco, CA",
-      type: "job_seeker",
-      status: "active",
-      applicationsCount: 23,
-      joinedDate: "2023-06-10",
-      skills: ["React", "TypeScript", "Node.js"]
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@email.com",
-      phone: "+1 234 567 8901",
-      location: "New York, NY",
-      type: "job_seeker",
-      status: "suspended",
-      applicationsCount: 8,
-      joinedDate: "2023-09-15",
-      skills: ["Python", "Django", "PostgreSQL"]
-    },
-    {
-      id: 3,
-      name: "Robert Brown",
-      email: "robert@techcorp.com",
-      phone: "+1 234 567 8902",
-      location: "Austin, TX",
-      type: "recruiter",
-      status: "active",
-      applicationsCount: 156,
-      joinedDate: "2023-07-22",
-      company: "Tech Corp"
-    }
-  ];
+  const { data: users = [], isLoading } = useAllUser();
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = userTypeFilter === 'all' || user.type === userTypeFilter;
-    return matchesSearch && matchesType;
+  const toggleStatus = useToggleUserStatus();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading users...
+      </div>
+    );
+  }
+
+  const filteredUsers = users.filter((user: any) => {
+    return (
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   });
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">User Management</h1>
-        <p className="text-slate-400 mt-2">Manage all platform users (job seekers & recruiters)</p>
+        <h1 className="text-3xl font-bold text-white">
+          User Management
+        </h1>
+
+        <p className="text-slate-400 mt-2">
+          Manage all job seekers on the platform
+        </p>
       </div>
 
-      {/* Filters */}
+      {/* Search */}
       <div className="bg-slate-900/30 border border-white/10 rounded-2xl p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <select
-            value={userTypeFilter}
-            onChange={(e) => setUserTypeFilter(e.target.value)}
-            className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-indigo-500"
-          >
-            <option value="all">All Users</option>
-            <option value="job_seeker">Job Seekers</option>
-            <option value="recruiter">Recruiters</option>
-          </select>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+          />
         </div>
       </div>
 
@@ -93,35 +72,87 @@ export default function AllUsers() {
           <table className="w-full">
             <thead className="bg-slate-800/50 border-b border-white/10">
               <tr>
-                <th className="text-left p-4 text-slate-400 font-medium">User</th>
-                <th className="text-left p-4 text-slate-400 font-medium">Contact</th>
-                <th className="text-left p-4 text-slate-400 font-medium">Type</th>
-                <th className="text-left p-4 text-slate-400 font-medium">Activity</th>
-                <th className="text-left p-4 text-slate-400 font-medium">Status</th>
-                <th className="text-left p-4 text-slate-400 font-medium">Actions</th>
+                <th className="text-left p-4 text-slate-400 font-medium">
+                  User
+                </th>
+
+                <th className="text-left p-4 text-slate-400 font-medium">
+                  Contact
+                </th>
+
+                <th className="text-left p-4 text-slate-400 font-medium">
+                  Activity
+                </th>
+
+                <th className="text-left p-4 text-slate-400 font-medium">
+                  Status
+                </th>
+
+                <th className="text-left p-4 text-slate-400 font-medium">
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody>
-              {filteredUsers.map((user) => (
-                <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition">
+              {filteredUsers.map((user: any) => (
+                <tr
+                  key={user.id}
+                  className={`
+                    border-b border-white/5 transition
+                    ${
+                      user.status === "blocked"
+                        ? "bg-red-500/5 opacity-70"
+                        : "hover:bg-white/5"
+                    }
+                  `}
+                >
+                  {/* User */}
                   <td className="p-4">
                     <div>
-                      <p className="text-white font-medium">{user.name}</p>
-                      <p className="text-xs text-slate-400">ID: #{user.id}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-white font-medium">
+                          {user.full_name || "Unknown User"}
+                        </p>
+
+                        {user.status === "blocked" && (
+                          <span className="px-2 py-0.5 text-[10px] rounded-full bg-red-500/20 text-red-400 border border-red-500/20">
+                            BLOCKED
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-slate-400">
+                        ID: #{user.id?.slice(0, 8)}
+                      </p>
                     </div>
                   </td>
+
+                  {/* Contact */}
                   <td className="p-4">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-slate-300 text-sm">
+
+                      {/* Email */}
+                      <div
+                        className={`flex items-center gap-2 text-sm ${
+                          user.status === "blocked"
+                            ? "text-slate-500"
+                            : "text-slate-300"
+                        }`}
+                      >
                         <Mail className="w-3 h-3" />
                         {user.email}
                       </div>
+
+                      {/* Phone */}
                       {user.phone && (
                         <div className="flex items-center gap-2 text-slate-400 text-xs">
                           <Phone className="w-3 h-3" />
                           {user.phone}
                         </div>
                       )}
+
+                      {/* Location */}
                       {user.location && (
                         <div className="flex items-center gap-2 text-slate-400 text-xs">
                           <MapPin className="w-3 h-3" />
@@ -130,54 +161,76 @@ export default function AllUsers() {
                       )}
                     </div>
                   </td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      user.type === 'recruiter' 
-                        ? 'bg-purple-500/10 text-purple-400'
-                        : 'bg-blue-500/10 text-blue-400'
-                    }`}>
-                      {user.type === 'recruiter' ? 'Recruiter' : 'Job Seeker'}
-                    </span>
-                    {user.type === 'recruiter' && user.company && (
-                      <p className="text-xs text-slate-400 mt-1">{user.company}</p>
-                    )}
-                  </td>
+
+                  {/* Activity */}
                   <td className="p-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-sm text-white">
                         <Briefcase className="w-3 h-3" />
-                        {user.applicationsCount} applications
+                        Job Seeker
                       </div>
+
                       <div className="flex items-center gap-2 text-xs text-slate-400">
                         <Clock className="w-3 h-3" />
-                        Joined: {user.joinedDate}
+                        Joined Recently
                       </div>
                     </div>
                   </td>
+
+                  {/* Status */}
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      user.status === 'active' 
-                        ? 'bg-emerald-400/10 text-emerald-400'
-                        : 'bg-red-400/10 text-red-400'
-                    }`}>
-                      {user.status}
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        user.status === "blocked"
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-emerald-500/10 text-emerald-400"
+                      }`}
+                    >
+                      {user.status || "active"}
                     </span>
                   </td>
+
+                  {/* Actions */}
                   <td className="p-4">
-                    <div className="flex gap-2">
-                      {user.status === 'active' ? (
-                        <button className="p-2 bg-red-600/20 hover:bg-red-600/30 rounded-lg transition">
-                          <Ban className="w-4 h-4 text-red-400" />
-                        </button>
-                      ) : (
-                        <button className="p-2 bg-emerald-600/20 hover:bg-emerald-600/30 rounded-lg transition">
-                          <CheckCircle className="w-4 h-4 text-emerald-400" />
-                        </button>
-                      )}
-                    </div>
+                    {user.status === "blocked" ? (
+                      <button
+                        onClick={() =>
+                          toggleStatus.mutate({
+                            userId: user.id,
+                            status: "active",
+                          })
+                        }
+                        className="p-2 bg-emerald-600/20 hover:bg-emerald-600/30 rounded-lg transition cursor-pointer"
+                      >
+                        <CheckCircle className="w-4 h-4 text-emerald-400" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          toggleStatus.mutate({
+                            userId: user.id,
+                            status: "blocked",
+                          })
+                        }
+                        className="p-2 bg-red-600/20 hover:bg-red-600/30 rounded-lg transition cursor-pointer"
+                      >
+                        <Ban className="w-4 h-4 text-red-400" />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
+
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-10 text-slate-500"
+                  >
+                    No users found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

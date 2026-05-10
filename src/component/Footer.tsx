@@ -16,14 +16,14 @@ const Footer = () => {
 
   const footerLinks = {
     Platform: [
-      { name: "Browse Jobs", href: "/Jobs" },
-      { name: "Companies", href: "/companies" },
-      { name: "Salaries", href: "/salaries" },
+      { name: "Browse Jobs", href: "/jobs" },
+      { name: "Saved Jobs", href: "/saved-jobs" },
+      { name: "About Us", href: "/aboutus" },
     ],
     Recruiters: [
-      { name: "Post a Job", href: "/post-job" },
+      { name: "Post a Job", href: "/login" },
       { name: "Talent Pool", href: "/talent" },
-      { name: "Pricing", href: "/pricing" },
+      { name: "About Us", href: "/aboutus" },
     ],
     Support: [
       { name: "Help Center", href: "/help" },

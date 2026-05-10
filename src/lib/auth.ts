@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 // REGISTER
 export const registerUser = async (
+  name: string,
   email: string,
   password: string,
   role: string,
@@ -28,9 +29,11 @@ export const registerUser = async (
     if (insertError) {
       throw new Error(insertError.message);
     }
+
     const { error: profileError } = await supabase.from("profiles").insert([
       {
         user_id: data.user.id,
+        name,
         email: data.user.email,
       },
     ]);
@@ -39,7 +42,7 @@ export const registerUser = async (
       throw new Error(profileError.message);
     }
 
-    // ✅ set zustand
+    // zustand
     useAuthStore.getState().setAuth(data.user, role);
   }
 

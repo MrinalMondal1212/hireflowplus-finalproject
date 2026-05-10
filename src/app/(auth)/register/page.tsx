@@ -8,24 +8,24 @@ import { registerUser } from "@/lib/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-
 const Register = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassWord] = useState("");
   const [role, setRole] = useState("user");
-  const [loading , setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const handelRegister = async () => {
-    setLoading(true)
-    const user = await registerUser(email, password, role);
+    setLoading(true);
+    const user = await registerUser(name, email, password, role);
     if (!user) {
       toast.error("User Already Exsit!!!");
-     setLoading(false)
-     return
+      setLoading(false);
+      return;
     }
-    toast.success("Register SuccessFull !!!!")
-    router.push("/login")
-    setLoading(false)
+    toast.success("Register SuccessFull !!!!");
+    router.push("/login");
+    setLoading(false);
   };
 
   return (
@@ -58,6 +58,8 @@ const Register = () => {
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
                 <input
                   type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Mrinal Mondal"
                   className="w-full bg-white/3 border border-white/10 rounded-[0.5rem] py-3 pl-10 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary focus:border-(--primary)/50 transition-all"
                 />

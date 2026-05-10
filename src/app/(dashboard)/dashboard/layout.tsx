@@ -9,8 +9,9 @@ import {
   LogOut,
   LayoutDashboard,
   Home,
+  House,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { logoutUser } from "@/lib/auth";
 
@@ -20,6 +21,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathName = usePathname();
 
   // ✅ Zustand
   const { user, role, loading } = useAuthStore();
@@ -40,6 +42,12 @@ export default function DashboardLayout({
   };
 
   const menuItems = [
+    {
+      name: "Home",
+      icon: House,
+      href: "/",
+      special: true,
+    },
     { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     { name: "Profile View", icon: User, href: "/dashboard/profile" },
     {
@@ -69,16 +77,37 @@ export default function DashboardLayout({
         </div>
 
         <nav className="flex-1 px-4 space-y-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all group"
-            >
-              <item.icon className="w-5 h-5 group-hover:text-indigo-400" />
-              <span className="font-medium">{item.name}</span>
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathName === item.href;
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl transition-all group
+                  ${
+                    isActive
+                      ? "bg-indigo-500/15 text-white border border-indigo-500/20"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }
+                `}
+              >
+                <item.icon
+                  className={`
+                    w-5 h-5 transition-colors
+                    ${
+                      isActive
+                        ? "text-indigo-400"
+                        : "group-hover:text-indigo-400"
+                    }
+                  `}
+                />
+
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Logout */}

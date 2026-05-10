@@ -2,8 +2,10 @@ import ShinyText from '@/components/ShinyText';
 import { RainbowButton } from '@/components/ui/rainbow-button';
 
 import { Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const FinalCTA = () => {
+  const router= useRouter()
   return (
     <section className="w-full py-24 px-6 bg-[oklch(0.12_0.01_250)]">
       <div className="max-w-7xl mx-auto relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent p-12 md:p-20 text-center">
@@ -22,11 +24,11 @@ const FinalCTA = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <RainbowButton className="px-10 py-5 text-xl rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]">
-              <ShinyText text="Start Hiring Now" color="#ffffff" shineColor="var(--primary)" className="font-bold" />
+              <ShinyText  text="Start Hiring Now" color="#ffffff" shineColor="var(--primary)" className="font-bold" />
             </RainbowButton>
             
-            <button className="px-10 py-5 rounded-2xl text-white font-semibold border border-white/10 hover:bg-white/5 transition-colors">
-              Talk to Sales
+            <button onClick={()=> router.push("/talent")} className="px-10 py-5 rounded-2xl text-white font-semibold border border-white/10 hover:bg-white/5 transition-colors">
+              See Talent
             </button>
           </div>
           
