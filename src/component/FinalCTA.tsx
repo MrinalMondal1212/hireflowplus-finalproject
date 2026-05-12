@@ -8,7 +8,7 @@ const FinalCTA = () => {
   const router= useRouter()
   return (
     <section className="w-full py-24 px-6 bg-[oklch(0.12_0.01_250)]">
-      <div className="max-w-7xl mx-auto relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent p-12 md:p-20 text-center">
+      <div className="max-w-7xl mx-auto relative overflow-hidden rounded-[2rem] border border-white/10 bg-linear-to-br from-white/5 to-transparent p-12 md:p-20 text-center">
         
         {/* Decorative background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] opacity-10 pointer-events-none"></div>

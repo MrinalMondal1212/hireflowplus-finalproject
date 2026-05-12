@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -23,6 +23,19 @@ export default function RecuriterDashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, role, loading } = useAuthStore();
+
+  useEffect(() => {
+  if (!loading) {
+    if (!user) {
+      router.push("/login");
+    } else if (role !== "recruiter") {
+      router.push("/");
+    }
+  }
+}, [user, role, loading]);
+  
+
 
   const logout = useAuthStore((s: any) => s.logout);
 
@@ -58,6 +71,10 @@ export default function RecuriterDashboardLayout({
       href: "/recruiter/editdeletejobs",
     },
   ];
+
+  if (loading) {
+  return <p className="text-white p-10">Checking access...</p>;
+}
 
   return (
     <div className="flex min-h-screen bg-black text-white">
