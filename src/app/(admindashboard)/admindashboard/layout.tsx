@@ -65,7 +65,7 @@ export default function AdminDashboardLayout({
       <aside className="w-72 border-r border-white/10 bg-slate-950/50 backdrop-blur-xl flex flex-col fixed h-full z-20">
         
         <div className="p-8">
-          <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+          <h2 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400">
             HireFlow+
           </h2>
           <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest">

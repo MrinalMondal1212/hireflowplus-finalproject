@@ -60,7 +60,7 @@ const FeaturedJobs = () => {
 
           {/* Foreground 3x3 Grid Layer */}
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-            {jobs?.map((job: any) => (
+            {jobs?.slice(0,9).map((job: any) => (
               <div
                 key={job.id}
                 className="group p-6 rounded-2xl bg-white/3 border border-white/10 backdrop-blur-md hover:bg-white/[0.07] hover:border-(--primary)/40 transition-all duration-500 cursor-pointer shadow-2xl"

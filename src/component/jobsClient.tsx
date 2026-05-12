@@ -32,9 +32,7 @@ const JobsClient = () => {
 
       const matchCompany = job.company?.toLowerCase().includes(searchValue);
 
-      const matchLocation = job.location
-        ?.toLowerCase()
-        .includes(locationValue);
+      const matchLocation = job.location?.toLowerCase().includes(locationValue);
 
       return (matchTitle || matchSkills || matchCompany) && matchLocation;
     });
@@ -62,8 +60,7 @@ const JobsClient = () => {
         {/* HEADER */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">
-            Find your next{" "}
-            <span className="text-indigo-500">opportunity.</span>
+            Find your next <span className="text-indigo-500">opportunity.</span>
           </h1>
 
           {/* SEARCH BAR */}
@@ -104,61 +101,61 @@ const JobsClient = () => {
         </div>
 
         {/* JOBS */}
+        {/* JOBS LIST */}
         <div className="space-y-4">
           {filteredJobs.map((job: any) => (
             <div
               key={job.id}
-              className="group relative bg-slate-900/40 hover:bg-slate-900/60 border border-white/10 p-6 rounded-2xl transition-all hover:border-indigo-500/50"
+              className="group relative bg-slate-900/40 hover:bg-slate-900/60 border border-white/10 p-6 rounded-2xl transition-all hover:border-indigo-500/50 flex flex-col"
             >
               <div className="flex flex-col md:flex-row justify-between gap-4">
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
+                  <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                     <Briefcase className="text-indigo-400 w-6 h-6" />
                   </div>
 
                   <div>
                     <h2 className="text-xl font-bold">{job.title}</h2>
-
                     <p className="text-slate-400">
                       {job.company} • {job.location}
                     </p>
-
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1 uppercase tracking-wider">
                       {job.job_type}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end justify-between">
-                  <p className="text-indigo-400 font-semibold">
+                <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-2">
+                  <p className="text-indigo-400 font-semibold text-lg">
                     ${job.salary_min} - ${job.salary_max}
                   </p>
-
-                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-2">
+                  <div className="flex items-center gap-2 text-slate-500 text-sm">
                     <Clock className="w-4 h-4" />
-
                     {new Date(job.created_at).toLocaleDateString()}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {job.skills?.map((skill: string) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-slate-300"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              {/* BOTTOM SECTION: Skills + Button */}
+              <div className="mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {job.skills?.map((skill: string) => (
+                    <span
+                      key={skill}
+                      className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-slate-300"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
 
-              <Link
-                href={`/jobs/${job.id}`}
-                className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black px-4 py-2 rounded-lg text-sm font-bold"
-              >
-                View Details
-              </Link>
+                <Link
+                  href={`/jobs/${job.id}`}
+                  className="w-full sm:w-auto text-center bg-white hover:bg-slate-200 text-black px-6 py-2.5 rounded-xl text-sm font-bold transition-colors shrink-0"
+                >
+                  View Details
+                </Link>
+              </div>
             </div>
           ))}
         </div>
