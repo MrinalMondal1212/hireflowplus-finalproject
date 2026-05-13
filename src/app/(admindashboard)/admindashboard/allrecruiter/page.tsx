@@ -131,26 +131,7 @@ const filteredRecruiters = recruiters.filter((recruiter:any) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 rounded-xl transition-all">
-                  <Shield className="w-4 h-4" />
-                  Verify
-                </button>
-                {recruiter.status === "active" ? (
-                  <button className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl transition-all">
-                    <Ban className="w-4 h-4" />
-                    Suspend
-                  </button>
-                ) : (
-                  <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 rounded-xl transition-all">
-                    <CheckCircle className="w-4 h-4" />
-                    Activate
-                  </button>
-                )}
-                <button className="p-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-xl transition-all">
-                  <MoreVertical className="w-5 h-5 text-slate-400" />
-                </button>
-              </div>
+              
             </div>
           </div>
         ))}
