@@ -6,7 +6,7 @@ export const registerUser = async (
   name: string,
   email: string,
   password: string,
-  role: string,
+  role: string
 ) => {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -18,62 +18,106 @@ export const registerUser = async (
   }
 
   if (data.user) {
-    const { error: insertError } = await supabase.from("users").insert([
-      {
-        id: data.user.id,
-        email: data.user.email,
-        role,
-      },
-    ]);
+    // recruiter => pending
+    // user => active
+    const status =
+      role === "recruiter"
+        ? "pending"
+        : "active";
+
+    // users table insert
+    const { error: insertError } =
+      await supabase.from("users").insert([
+        {
+          id: data.user.id,
+          full_name: name,
+          email: data.user.email,
+          role,
+          status,
+        },
+      ]);
 
     if (insertError) {
       throw new Error(insertError.message);
     }
 
-    const { error: profileError } = await supabase.from("profiles").insert([
-      {
-        user_id: data.user.id,
-        name,
-        email: data.user.email,
-      },
-    ]);
+    // profile table
+    const { error: profileError } =
+      await supabase.from("profiles").insert([
+        {
+          user_id: data.user.id,
+          name,
+          email: data.user.email,
+        },
+      ]);
 
     if (profileError) {
       throw new Error(profileError.message);
     }
 
     // zustand
-    useAuthStore.getState().setAuth(data.user, role);
+    useAuthStore
+      .getState()
+      .setAuth(
+        data.user,
+        role,
+        status
+      );
   }
 
   return data.user;
 };
 
-// LOGIN
-export const loginUser = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+// LOGI
+export const loginUser = async (
+  email: string,
+  password: string
+) => {
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
   if (error) {
     throw new Error(error.message);
   }
 
   if (data.user) {
-    const role = await getUserRole(data.user.id);
+    const userData =
+      await getUserData(data.user.id);
 
-    useAuthStore.getState().setAuth(data.user, role);
+    // recruiter approval check
+    if (
+      userData.role === "recruiter" &&
+      userData.status !== "active"
+    ) {
+      await supabase.auth.signOut();
+
+      throw new Error(
+        "Recruiter account waiting for admin approval"
+      );
+    }
+
+    useAuthStore
+      .getState()
+      .setAuth(
+        data.user,
+        userData.role,
+        userData.status
+      );
   }
 
   return data.user;
 };
 
-// GET ROLE
-export const getUserRole = async (userId: string) => {
+// GET USER DATA
+export const getUserData = async (
+  userId: string
+) => {
   const { data, error } = await supabase
     .from("users")
-    .select("role")
+    .select("*")
     .eq("id", userId)
     .single();
 
@@ -81,11 +125,12 @@ export const getUserRole = async (userId: string) => {
     throw new Error(error.message);
   }
 
-  return data.role;
+  return data;
 };
 
 // LOGOUT
 export const logoutUser = async () => {
   await supabase.auth.signOut();
+
   useAuthStore.getState().logout();
 };

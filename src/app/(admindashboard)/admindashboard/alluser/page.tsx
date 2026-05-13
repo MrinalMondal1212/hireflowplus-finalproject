@@ -4,24 +4,24 @@ import React, { useState } from "react";
 
 import {
   Search,
-  Ban,
-  CheckCircle,
   Mail,
   Phone,
   MapPin,
   Briefcase,
   Clock,
+  Trash2,
 } from "lucide-react";
 
 import { useToggleUserStatus } from "@/hooks/useToggelUserStatus";
 import { useAllUser } from "@/hooks/useAllUsers";
+import { useDeleteUser } from "@/hooks/useDeleteUser";
 
 export default function AllUsers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: users = [], isLoading } = useAllUser();
 
-  const toggleStatus = useToggleUserStatus();
+  const deleteUser = useDeleteUser();
 
   if (isLoading) {
     return (
@@ -42,9 +42,7 @@ export default function AllUsers() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">
-          User Management
-        </h1>
+        <h1 className="text-3xl font-bold text-white">User Management</h1>
 
         <p className="text-slate-400 mt-2">
           Manage all job seekers on the platform
@@ -131,7 +129,6 @@ export default function AllUsers() {
                   {/* Contact */}
                   <td className="p-4">
                     <div className="space-y-1">
-
                       {/* Email */}
                       <div
                         className={`flex items-center gap-2 text-sm ${
@@ -191,42 +188,29 @@ export default function AllUsers() {
                   </td>
 
                   {/* Actions */}
+                  {/* Actions */}
                   <td className="p-4">
-                    {user.status === "blocked" ? (
-                      <button
-                        onClick={() =>
-                          toggleStatus.mutate({
-                            userId: user.id,
-                            status: "active",
-                          })
+                    <button
+                      onClick={() => {
+                        const confirmDelete = window.confirm(
+                          "Are you sure you want to delete this user?",
+                        );
+
+                        if (confirmDelete) {
+                          deleteUser.mutate(user.id);
                         }
-                        className="p-2 bg-emerald-600/20 hover:bg-emerald-600/30 rounded-lg transition cursor-pointer"
-                      >
-                        <CheckCircle className="w-4 h-4 text-emerald-400" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() =>
-                          toggleStatus.mutate({
-                            userId: user.id,
-                            status: "blocked",
-                          })
-                        }
-                        className="p-2 bg-red-600/20 hover:bg-red-600/30 rounded-lg transition cursor-pointer"
-                      >
-                        <Ban className="w-4 h-4 text-red-400" />
-                      </button>
-                    )}
+                      }}
+                      className="p-2 bg-red-600/20 hover:bg-red-600/30 rounded-lg transition cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-400" />
+                    </button>
                   </td>
                 </tr>
               ))}
 
               {filteredUsers.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={5}
-                    className="text-center py-10 text-slate-500"
-                  >
+                  <td colSpan={5} className="text-center py-10 text-slate-500">
                     No users found
                   </td>
                 </tr>

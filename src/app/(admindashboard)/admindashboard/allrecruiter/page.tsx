@@ -10,35 +10,32 @@ import {
   Mail,
   Building,
   Calendar,
+  Trash2,
 } from "lucide-react";
 import { useAllRecruiters } from "@/hooks/useAllRecruiters";
 import { useToggleRecruiterStatus } from "@/hooks/useToggleRecruiterStatus";
+import { useDeleteRecruiter } from "@/hooks/useDeleteRecruiter";
 
 export default function AllRecruiters() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const { data: recruiters = [], isLoading } = useAllRecruiters();
+  const deleteRecruiter = useDeleteRecruiter();
 
   const toggleRecruiter = useToggleRecruiterStatus();
 
- 
+  const filteredRecruiters = recruiters.filter((recruiter: any) => {
+    const matchesSearch =
+      (recruiter.full_name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (recruiter.email || "").toLowerCase().includes(searchTerm.toLowerCase());
 
-const filteredRecruiters = recruiters.filter((recruiter:any) => {
-  const matchesSearch =
-    (recruiter.full_name || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()) ||
+    const matchesStatus =
+      statusFilter === "all" || recruiter.status === statusFilter;
 
-    (recruiter.email || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
-  const matchesStatus =
-    statusFilter === "all" ||
-    recruiter.status === statusFilter;
-
-  return matchesSearch && matchesStatus;
-});
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -110,12 +107,15 @@ const filteredRecruiters = recruiters.filter((recruiter:any) => {
                   </div>
                   <div className="flex items-center gap-2 text-slate-400">
                     <Building className="w-4 h-4" />
-                    <span className="text-sm">{recruiter.company || "No Company Added"}</span>
+                    <span className="text-sm">
+                      {recruiter.company || "No Company Added"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-400">
                     <Calendar className="w-4 h-4" />
                     <span className="text-sm">
-                     Joined: {new Date(recruiter.created_at).toLocaleDateString()}
+                      Joined:{" "}
+                      {new Date(recruiter.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -131,7 +131,47 @@ const filteredRecruiters = recruiters.filter((recruiter:any) => {
               </div>
 
               {/* Action Buttons */}
-              
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-3">
+                {/* Suspend / Activate */}
+                <button
+                  onClick={() => toggleRecruiter.mutate(recruiter.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
+                    recruiter.status === "active"
+                      ? "bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20"
+                      : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                  }`}
+                >
+                  {recruiter.status === "active" ? (
+                    <>
+                      <Ban className="w-4 h-4" />
+                      Suspend
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-4 h-4" />
+                      Activate
+                    </>
+                  )}
+                </button>
+
+                {/* Delete Recruiter */}
+                <button
+                  onClick={() => {
+                    const confirmDelete = window.confirm(
+                      "Are you sure you want to delete this recruiter?",
+                    );
+
+                    if (confirmDelete) {
+                      deleteRecruiter.mutate(recruiter.id);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}

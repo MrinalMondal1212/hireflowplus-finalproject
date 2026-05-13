@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Users,
-  Briefcase,
-  FileText,
-  ShieldAlert,
-} from "lucide-react";
+import { Users, Briefcase, FileText, ShieldAlert } from "lucide-react";
 
 import { useAdminStats } from "@/hooks/useAdminStats";
 import { useAdminChartData } from "@/hooks/useAdminChartData";
@@ -19,11 +14,21 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { usePendingRecruiters } from "@/hooks/usePendingRecruiters";
+
+import { useRejectRecruiter } from "@/hooks/useRejectRecruiter";
+import { useApproveRecruiter } from "@/hooks/useApproveRecruiters";
 
 export default function SimpleAdminDashboard() {
   const { data } = useAdminStats();
 
   const { data: chartData = [] } = useAdminChartData();
+
+  const { data: pendingRecruiters = [] } = usePendingRecruiters();
+
+  const approveRecruiter = useApproveRecruiter();
+
+  const rejectRecruiter = useRejectRecruiter();
 
   const stats = [
     {
@@ -74,13 +79,9 @@ export default function SimpleAdminDashboard() {
               <stat.icon className="w-5 h-5 text-indigo-400" />
             </div>
 
-            <h3 className="text-3xl font-bold mt-4 text-white">
-              {stat.value}
-            </h3>
+            <h3 className="text-3xl font-bold mt-4 text-white">{stat.value}</h3>
 
-            <p className="text-sm text-slate-500">
-              {stat.label}
-            </p>
+            <p className="text-sm text-slate-500">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -88,9 +89,7 @@ export default function SimpleAdminDashboard() {
       {/* Chart */}
       <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-6">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white">
-            Platform Analytics
-          </h2>
+          <h2 className="text-2xl font-bold text-white">Platform Analytics</h2>
 
           <p className="text-slate-400 text-sm mt-1">
             Users, recruiters, jobs and applications overview
@@ -108,13 +107,72 @@ export default function SimpleAdminDashboard() {
 
               <Tooltip />
 
-              <Bar
-                dataKey="total"
-                radius={[10, 10, 0, 0]}
-                fill="#6366f1"
-              />
+              <Bar dataKey="total" radius={[10, 10, 0, 0]} fill="#6366f1" />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+        {/* Pending Recruiter Requests */}
+        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white">
+                Recruiter Requests
+              </h2>
+
+              <p className="text-slate-400 text-sm mt-1">
+                Approve or reject recruiter accounts
+              </p>
+            </div>
+
+            <div className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-sm">
+              Pending Approval
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {pendingRecruiters?.map((recruiter: any) => (
+              <div
+                key={recruiter.id}
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl border border-white/10 bg-black/30"
+              >
+                {/* Left */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white">
+                    {recruiter.full_name || "Recruiter"}
+                  </h3>
+
+                  <p className="text-slate-400 text-sm">{recruiter.email}</p>
+
+                  <div className="mt-2 inline-flex px-2 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 text-xs">
+                    Pending
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => approveRecruiter.mutate(recruiter.id)}
+                    className="px-5 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    onClick={() => rejectRecruiter.mutate(recruiter.id)}
+                    className="px-5 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {pendingRecruiters?.length === 0 && (
+              <div className="text-center py-10 text-slate-500">
+                No pending recruiter requests
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
